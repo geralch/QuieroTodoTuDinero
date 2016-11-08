@@ -57,20 +57,22 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private ArrayList<Persona> relacionesNuevoSocio;
     private JButton buttonCrearSocio;
     
+    private Cooperativa cooperativa;
+    
     private JScrollPane scrollPane;
     
     /*Constructor de la clase*/
     public VentanaPrincipal(){
         
         formatoFechas = new SimpleDateFormat("yyy-MM-dd");
-          
+        cooperativa = new Cooperativa();
     }
     
     /*Metodo que se encarga de mostrar la ventana y organizar sus componentes*/
     public void mostrarVentana(){
         
         this.setTitle(".: Quiero Todo tu Dinero :.");
-        this.setSize(1050,690); 
+        this.setSize(1070,700); 
         //this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE); 
@@ -92,7 +94,6 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     }
         
     private void espacioFormatoSocios(){
-        
         
         panelEFSocios = new JPanel(new GridLayout(18,2,0,0));
         panelEFSocios.setBorder(BorderFactory.createTitledBorder("Campos Socio"));
@@ -256,34 +257,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         contenedor.add(panelPrestamos);        
         
     }
-    
-    
-    private void tomarInformacionFormularioSocios() throws ParseException{
         
-        nuevoSocio = new List();
-        relacionesNuevoSocio = new ArrayList();
-        
-        String nombre = tfNombreCompleto.getText();
-        String td = cbTD.getSelectedItem().toString();
-        String documento = tfCedulaCiudadania.getText();
-        String ciudadExp = tfCiudadExpTD.getText();
-        Date fechaNacimiento = formatoFechas.parse(tfFechaNacimiento.getText());         
-        String empresa = tfEmpresa.getText();
-        String cargo = tfCargoDesempenyado.getText();
-        Date fechaIngreso = formatoFechas.parse(tfFechaIngreso.getText());  
-        String nivelEstudio = cdNiveldeEstudios.getSelectedItem().toString();
-        String estadoCivil = cdEstadoCivil.getSelectedItem().toString();
-        boolean casaApartamento = cbCasaApartamente.isSelected();
-        String direccion = tfDireccion.getText();
-        String telefono = tfTelefono.getText();
-        String celular = tfCelular.getText();
-        String barrio = tfBarrio.getText();
-        String ciudad = tfCiudad.getText();
-        String ingresosMesuales = tfIngresosMensuales.getText();
-        String egresosMensuales = tfEgresosMensuales.getText();
-          
-    }
-    
     private boolean verificarDatos(){
         boolean verificacion = false;
         System.out.print("entra aqui a verificar");
@@ -299,7 +273,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         
         return verificacion;
     }
-    
+
     private void obtenerDatosSocio(int tipoform){
         
         //nuevoSocio = new List();
@@ -362,6 +336,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             }   
             Socio nuevoSocio = new Socio(nombre,documento,td,fechaNacimiento,ciudadExp,empresa,cargo,fechaIngreso,nivelEstudio,casaApartamento,direccion,telefono,celular,barrio,ciudad,
                 ingresosMensuales,ingresosMensuales,estadoCivil,conyugueSocio,madreSocio,padreSocio,hijos);
+            cooperativa.anyadirSocios(nuevoSocio);
         }
         else{
             
@@ -369,6 +344,65 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         }
         
     
+    }
+    
+    public int buscarIndexComboBox(String texto, JComboBox combobox){
+        
+        int index = 0;
+        for(int i=0; i<combobox.getItemCount(); i++){
+            if(texto.equals(combobox.getItemAt(i).toString())){
+                index = i;
+            }
+        }
+        return index;
+    }
+       
+    public void ponerDatosSocioCampos(Socio socioConsultar){
+        tfNombreCompleto.setText(socioConsultar.getNombreCompleto());
+        cbTD.setSelectedIndex(buscarIndexComboBox(socioConsultar.getTipoDI(),cbTD));
+        tfCedulaCiudadania.setText(socioConsultar.getDi());
+        tfCiudadExpTD.setText(socioConsultar.getLugarExpID());
+        tfFechaNacimiento.setText(socioConsultar.getFechaNacimiento());         
+        tfEmpresa.setText(socioConsultar.getNombreEmpresa());
+        tfCargoDesempenyado.setText(socioConsultar.getCargoEmpresa());
+        tfFechaIngreso.setText(socioConsultar.getFechaIngresoEmpresa());  
+        cdNiveldeEstudios.setSelectedIndex(buscarIndexComboBox(socioConsultar.getNivelEstudios(),cdNiveldeEstudios));
+        cdEstadoCivil.setSelectedIndex(buscarIndexComboBox(socioConsultar.getEstadoCivil(),cdEstadoCivil));
+        cbCasaApartamente.setSelected(socioConsultar.isCasaAptPropio());
+        tfDireccion.setText(socioConsultar.getDireccionResidencia());
+        tfTelefono.setText(String.valueOf(socioConsultar.getTelefonoResidencia()));
+        tfCelular.setText(String.valueOf(socioConsultar.getCelular()));
+        tfBarrio.setText(socioConsultar.getDireccionResidencia());
+        tfCiudad.setText(socioConsultar.getDireccionResidencia());
+        tfIngresosMensuales.setText(String.valueOf(socioConsultar.getIngresoMensual()));
+        tfEgresosMensuales.setText(String.valueOf(socioConsultar.getEgresoMensual()));
+        
+        modeloTabla.setValueAt(socioConsultar.getConyugue().getNombreCompleto(), 0, 1);
+        modeloTabla.setValueAt(socioConsultar.getConyugue().getFechaNacimiento(), 0, 2);
+        modeloTabla.setValueAt(socioConsultar.getConyugue().getTipoDI(), 0, 3);
+        modeloTabla.setValueAt(socioConsultar.getConyugue().getDi(), 0, 4);
+        
+        modeloTabla.setValueAt(socioConsultar.getMadre().getNombreCompleto(), 1, 1);
+        modeloTabla.setValueAt(socioConsultar.getMadre().getFechaNacimiento(), 1, 2);
+        modeloTabla.setValueAt(socioConsultar.getMadre().getTipoDI(), 1, 3);
+        modeloTabla.setValueAt(socioConsultar.getMadre().getDi(), 1, 4);
+        
+        modeloTabla.setValueAt(socioConsultar.getPadre().getNombreCompleto(), 2, 1);
+        modeloTabla.setValueAt(socioConsultar.getPadre().getFechaNacimiento(), 2, 2);
+        modeloTabla.setValueAt(socioConsultar.getPadre().getTipoDI(), 2, 3);
+        modeloTabla.setValueAt(socioConsultar.getPadre().getDi(), 2, 4);
+        
+        int j = 0;
+        for(int i=4; i<socioConsultar.getHijos().size(); i++){
+                modeloTabla.addRow(new Object[]{"Hijo/a","","","",""});
+                modeloTabla.setValueAt(socioConsultar.getHijo(j).getNombreCompleto(),i, 1);
+                modeloTabla.setValueAt(socioConsultar.getHijo(j).getFechaNacimiento(),i, 2);
+                modeloTabla.setValueAt(socioConsultar.getHijo(j).getTipoDI(),i, 3);
+                modeloTabla.setValueAt(socioConsultar.getHijo(j).getDi(),i, 4);
+                j++;
+            }  
+        
+        panelFormularios.updateUI();
     }
     
     /*MEtodo heredado de Action Listener que establece las acciones que se hace 
@@ -388,12 +422,20 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         }
         
         if(e.getSource()==botonSocioConsultar){
-            JOptionPane.showInputDialog(null,"Que socio desea consultar?");
-            panelFormularios.removeAll();
-            espacioFormatoSocios();
-            panelBotonesSocios.add(botonSocioEditar);
-            panelBotonesSocios.add(botonSocioEliminar);
-            panelFormularios.updateUI();
+            int sociosConsultar = Integer.parseInt(JOptionPane.showInputDialog(null,"Que socio desea consultar?"));
+            
+            if(cooperativa.socioExiste(sociosConsultar)){
+                Socio socioConsultar = cooperativa.cosultarSocio(sociosConsultar);
+                panelFormularios.removeAll();
+                espacioFormatoSocios();
+                ponerDatosSocioCampos(socioConsultar);
+                panelBotonesSocios.add(botonSocioEditar);
+                panelBotonesSocios.add(botonSocioEliminar);
+                panelFormularios.updateUI();
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"Socio No Existe");
+            }
         }
         
         if(e.getSource()==botonSocioEliminar){

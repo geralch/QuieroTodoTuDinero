@@ -11,4 +11,93 @@ public class Prestamo {
     private Date fechaAutorizacion;
     private Date fechaDesembolse;
     private ArrayList<Date> fechasConsignaciones;
+    
+    public Prestamo(){
+        
+    }
+    public Prestamo(int numeroPrestemo, Socio socioResponsable, double valorPrestamos, int cuotasPago, boolean autorizada, boolean consignada, Date fechaAutorizacion, Date fechaDesembolse, ArrayList<Date> fechasConsignaciones) {
+        this.numeroPrestemo = numeroPrestemo;
+        this.socioResponsable = socioResponsable;
+        this.valorPrestamos = valorPrestamos;
+        this.cuotasPago = cuotasPago;
+        this.autorizada = autorizada;
+        this.consignada = consignada;
+        this.fechaAutorizacion = fechaAutorizacion;
+        this.fechaDesembolse = fechaDesembolse;
+        this.fechasConsignaciones = fechasConsignaciones;
+    }
+    
+    public int getNumeroPrestemo() {
+        return numeroPrestemo;
+    }
+
+    public Socio getSocioResponsable() {
+        return socioResponsable;
+    }
+
+    public double getValorPrestamos() {
+        return valorPrestamos;
+    }
+
+    public int getCuotasPago() {
+        return cuotasPago;
+    }
+
+    public boolean isAutorizada() {
+        return autorizada;
+    }
+
+    public boolean isConsignada() {
+        return consignada;
+    }
+
+    public Date getFechaAutorizacion() {
+        return fechaAutorizacion;
+    }
+
+    public Date getFechaDesembolse() {
+        return fechaDesembolse;
+    }
+
+    public ArrayList<Date> getFechasConsignaciones() {
+        return fechasConsignaciones;
+    }
+
+    public void setNumeroPrestemo(int numeroPrestemo) {
+        this.numeroPrestemo = numeroPrestemo;
+    }
+
+    public void setSocioResponsable(Socio socioResponsable) {
+        this.socioResponsable = socioResponsable;
+    }
+
+    public void setValorPrestamos(double valorPrestamos) {
+        this.valorPrestamos = valorPrestamos;
+    }
+
+    public void setCuotasPago(int cuotasPago) {
+        this.cuotasPago = cuotasPago;
+    }
+
+    public void setAutorizada(boolean autorizada) {
+        this.autorizada = autorizada;
+    }
+
+    public void setConsignada(boolean consignada) {
+        this.consignada = consignada;
+    }
+
+    public void setFechaAutorizacion(Date fechaAutorizacion) {
+        this.fechaAutorizacion = fechaAutorizacion;
+    }
+
+    public void setFechaDesembolse(Date fechaDesembolse) {
+        this.fechaDesembolse = fechaDesembolse;
+    }
+
+    public void setFechasConsignaciones(ArrayList<Date> fechasConsignaciones) {
+        this.fechasConsignaciones = fechasConsignaciones;
+    }
+    
+    
 }

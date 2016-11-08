@@ -124,6 +124,9 @@ public class Socio extends Persona{
     public ArrayList<Persona> getHijos() {
         return hijos;
     }
+    public Persona getHijo(int i) {
+        return hijos.get(i);
+    }
 
     public void setLugarExpID(String lugarExpID) {
         this.lugarExpID = lugarExpID;

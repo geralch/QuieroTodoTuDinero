@@ -99,5 +99,16 @@ public class Cooperativa {
         }
         return socioEsta;
     }    
+    
+    public boolean prestamoExiste(int idPrestamo){
+        
+        boolean prestamoEsta = false;
+        for(int i=0; i<prestamos.size(); i++){
+            if(idPrestamo==prestamos.get(i).getNumeroPrestemo()){
+                prestamoEsta = true;
+            }
+        }
+        return prestamoEsta;
+    }   
 }
 

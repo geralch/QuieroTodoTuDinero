@@ -4,16 +4,16 @@ import java.util.*;
 public class Prestamo {
     private int numeroPrestemo;
     private Socio socioResponsable;
-    private double valorPrestamos;
+    private int valorPrestamos;
     private int cuotasPago;
-    private Date fechaAutorizacion;
-    private Date fechaDesembolse;
-    private ArrayList<Date> fechasConsignaciones;
+    private String fechaAutorizacion;
+    private String fechaDesembolse;
+    private ArrayList<String> fechasConsignaciones;
     
     public Prestamo(){
         
     }
-    public Prestamo(int numeroPrestemo, Socio socioResponsable, double valorPrestamos, int cuotasPago, Date fechaAutorizacion, Date fechaDesembolse, ArrayList<Date> fechasConsignaciones) {
+    public Prestamo(int numeroPrestemo, Socio socioResponsable, int valorPrestamos, int cuotasPago, String fechaAutorizacion, String fechaDesembolse, ArrayList<String> fechasConsignaciones) {
         this.numeroPrestemo = numeroPrestemo;
         this.socioResponsable = socioResponsable;
         this.valorPrestamos = valorPrestamos;
@@ -31,7 +31,7 @@ public class Prestamo {
         return socioResponsable;
     }
 
-    public double getValorPrestamos() {
+    public int getValorPrestamos() {
         return valorPrestamos;
     }
 
@@ -39,15 +39,15 @@ public class Prestamo {
         return cuotasPago;
     }
 
-    public Date getFechaAutorizacion() {
+    public String getFechaAutorizacion() {
         return fechaAutorizacion;
     }
 
-    public Date getFechaDesembolse() {
+    public String getFechaDesembolse() {
         return fechaDesembolse;
     }
 
-    public ArrayList<Date> getFechasConsignaciones() {
+    public ArrayList<String> getFechasConsignaciones() {
         return fechasConsignaciones;
     }
 
@@ -59,7 +59,7 @@ public class Prestamo {
         this.socioResponsable = socioResponsable;
     }
 
-    public void setValorPrestamos(double valorPrestamos) {
+    public void setValorPrestamos(int valorPrestamos) {
         this.valorPrestamos = valorPrestamos;
     }
 
@@ -67,15 +67,15 @@ public class Prestamo {
         this.cuotasPago = cuotasPago;
     }
 
-    public void setFechaAutorizacion(Date fechaAutorizacion) {
+    public void setFechaAutorizacion(String fechaAutorizacion) {
         this.fechaAutorizacion = fechaAutorizacion;
     }
 
-    public void setFechaDesembolse(Date fechaDesembolse) {
+    public void setFechaDesembolse(String fechaDesembolse) {
         this.fechaDesembolse = fechaDesembolse;
     }
 
-    public void setFechasConsignaciones(ArrayList<Date> fechasConsignaciones) {
+    public void setFechasConsignaciones(ArrayList<String> fechasConsignaciones) {
         this.fechasConsignaciones = fechasConsignaciones;
     }
     

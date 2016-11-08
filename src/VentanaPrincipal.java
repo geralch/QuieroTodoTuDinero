@@ -57,6 +57,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     
     private Cooperativa cooperativa;
     private Socio socioConsultar;
+    private Prestamo prestamoConsultar;
     
     private JScrollPane scrollPane;
     private JTextField tfDISocio;
@@ -496,6 +497,13 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panelFormularios.add(panelBotonesPrestamo);
     } 
     
+    private void obtenerDatosPrestamo(int tipoform, Prestamo prestamo){
+        
+        int numeroPrestamo,valorPrestamo, cuotasPago = 0;
+        String fechaAutorizacion, fechaDesembolse = "";
+        
+    }
+    
     
     /*MEtodo heredado de Action Listener que establece las acciones que se hace 
      al hacer click en algunos elementos de la pantalla*/
@@ -566,7 +574,21 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         }
                 
         if(e.getSource()==botonPrestamoConsultar){
-            int sociosConsultar = Integer.parseInt(JOptionPane.showInputDialog(null,"Que Prestamo desea consultar?"));
+            int prestamosConsultar = Integer.parseInt(JOptionPane.showInputDialog(null,"Que Prestamo desea consultar?"));
+            
+            //if(cooperativa.prestamoExiste(prestamosConsultar)){
+                prestamoConsultar = cooperativa.cosultarPrestamo(prestamosConsultar);
+                panelFormularios.removeAll();
+                redimensionarPanel(600,580,panelFormularios);
+                espacioFormatoPrestamos();
+                //ponerDatosSocioCampos(socioConsultar);
+                panelBotonesPrestamo.add(botonPrestamoEditar);
+                panelBotonesPrestamo.add(botonPrestamoEliminar);
+                panelFormularios.updateUI();
+            //}
+            //else{
+            //    JOptionPane.showMessageDialog(null,"Prestamo No Existe");
+            //}
         }
         
         if(e.getSource()==botonPrestamoEditar){

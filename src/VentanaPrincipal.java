@@ -52,19 +52,15 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private JButton botonPrestamoConsultar;
     private JButton botonPrestamoEliminar;
     
-    private SimpleDateFormat formatoFechas;
-    private List nuevoSocio;
-    private ArrayList<Persona> relacionesNuevoSocio;
     private JButton buttonCrearSocio;
     
     private Cooperativa cooperativa;
+    private Socio socioConsultar;
     
     private JScrollPane scrollPane;
     
     /*Constructor de la clase*/
     public VentanaPrincipal(){
-        
-        formatoFechas = new SimpleDateFormat("yyy-MM-dd");
         cooperativa = new Cooperativa();
     }
     
@@ -73,7 +69,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         
         this.setTitle(".: Quiero Todo tu Dinero :.");
         this.setSize(1070,700); 
-        //this.setResizable(false);
+        this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE); 
         
@@ -89,7 +85,6 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         espacioSocios();
         espacioPrestamos();
         contenedor.add(panelFormularios);
-        //espacioFormatoSocios();
         this.setVisible(true);
     }
         
@@ -228,42 +223,12 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
        
         contenedor.add(panelSocios);
     }
-    
-    /*Metodo que se encarga de crear el componente del arbol en la ventana*/
-    private void espacioPrestamos(){
-        panelPrestamos = new JPanel(new FlowLayout());
-        panelPrestamos.setBorder(BorderFactory.createTitledBorder("Prestamos")); 
-        Dimension dimension = new Dimension();
-        dimension.setSize(400, 70);
-        panelPrestamos.setPreferredSize(dimension);
-        
-        botonPrestamoNuevo = new JButton("Nuevo");
-        botonPrestamoNuevo.addActionListener(this);
-        
-        botonPrestamoEditar = new JButton("Editar");
-        botonPrestamoEditar.addActionListener(this);
-        
-        botonPrestamoConsultar = new JButton("Consultar");
-        botonPrestamoConsultar.addActionListener(this);
-        
-        botonPrestamoEliminar = new JButton("Eliminar");
-        botonPrestamoEliminar.addActionListener(this);
-        
-        panelPrestamos.add(botonPrestamoNuevo);
-        panelPrestamos.add(botonPrestamoEditar);
-        panelPrestamos.add(botonPrestamoConsultar);
-        panelPrestamos.add(botonPrestamoEliminar);
-        
-        contenedor.add(panelPrestamos);        
-        
-    }
-        
+       
     private boolean verificarDatos(){
         boolean verificacion = false;
         System.out.print("entra aqui a verificar");
         if(tfNombreCompleto.getText().equals("") || tfCedulaCiudadania.getText().equals("") || 
                 tfDireccion.getText().equals("") || tfTelefono.getText().equals("") || tfCelular.getText().equals("")){
-            verificacion = false;
             System.out.print("entra aqui verificacion true");
         }
         else{
@@ -274,11 +239,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         return verificacion;
     }
 
-    private void obtenerDatosSocio(int tipoform){
-        
-        //nuevoSocio = new List();
-        relacionesNuevoSocio = new ArrayList();
-        
+    private void obtenerDatosSocio(int tipoform, Socio socioConsultar){
+               
         String conyugueNombre = modeloTabla.getValueAt(0, 1).toString();
         String conyugueFecha = modeloTabla.getValueAt(0, 2).toString();  
         String conyugueTD = modeloTabla.getValueAt(0, 3).toString();
@@ -296,7 +258,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         
         String nombre, td, documento, ciudadExp, fechaNacimiento, empresa, cargo, fechaIngreso, nivelEstudio, estadoCivil,direccion, barrio, ciudad = "";
         int telefono, celular = 0;
-        double ingresosMensuales, egresosMensuales = 0.0;
+        int ingresosMensuales, egresosMensuales = 0;
         
         nombre = tfNombreCompleto.getText();
         td = cbTD.getSelectedItem().toString();
@@ -314,8 +276,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         celular = Integer.parseInt(tfCelular.getText());
         barrio = tfBarrio.getText();
         ciudad = tfCiudad.getText();
-        ingresosMensuales = Double.parseDouble(tfIngresosMensuales.getText());
-        egresosMensuales = Double.parseDouble(tfEgresosMensuales.getText());
+        ingresosMensuales = Integer.parseInt(tfIngresosMensuales.getText());
+        egresosMensuales = Integer.parseInt(tfEgresosMensuales.getText());
         
         if(tipoform==1){
             Persona conyugueSocio = new Persona(conyugueNombre,conyugueDocumento,conyugueTD,conyugueFecha);
@@ -326,7 +288,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
             ArrayList<Persona> hijos = new ArrayList();
 
-            for(int i=4; i<numeroHijos; i++){
+            for(int i=3; i<numeroHijos; i++){
                 String hijoNombre = modeloTabla.getValueAt(i, 1).toString();
                 String hijoFecha = modeloTabla.getValueAt(i, 2).toString();
                 String hijoTD = modeloTabla.getValueAt(i, 3).toString();
@@ -339,11 +301,51 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             cooperativa.anyadirSocios(nuevoSocio);
         }
         else{
+            socioConsultar.setNombreCompleto(nombre);
+            socioConsultar.setDi(documento);
+            socioConsultar.setTipoDI(td);
+            socioConsultar.setFechaNacimiento(fechaNacimiento);
+            socioConsultar.setLugarExpID(ciudadExp);
+            socioConsultar.setNombreEmpresa(empresa);
+            socioConsultar.setCargoEmpresa(cargo);
+            socioConsultar.setFechaIngresoEmpresa(fechaIngreso);
+            socioConsultar.setNivelEstudios(nivelEstudio);
+            socioConsultar.setCasaAptPropio(casaApartamento);
+            socioConsultar.setDireccionResidencia(direccion);
+            socioConsultar.setTelefonoResidencia(telefono);
+            socioConsultar.setCelular(celular);
+            socioConsultar.setBarrioResidencia(barrio);
+            socioConsultar.setCiudadResidencia(ciudad);
+            socioConsultar.setIngresoMensual(ingresosMensuales);
+            socioConsultar.setEgresoMensual(egresosMensuales);
+            socioConsultar.setEstadoCivil(estadoCivil);
             
+            socioConsultar.getConyugue().setNombreCompleto(conyugueNombre);
+            socioConsultar.getConyugue().setDi(conyugueDocumento);
+            socioConsultar.getConyugue().setTipoDI(conyugueTD);
+            socioConsultar.getConyugue().setFechaNacimiento(conyugueFecha);
+            
+            socioConsultar.getMadre().setNombreCompleto(madreNombre);
+            socioConsultar.getMadre().setDi(madreDocumento);
+            socioConsultar.getMadre().setTipoDI(madreTD);
+            socioConsultar.getMadre().setFechaNacimiento(madreFecha);
+            
+            socioConsultar.getPadre().setNombreCompleto(padreNombre);
+            socioConsultar.getPadre().setDi(padreDocumento);
+            socioConsultar.getPadre().setTipoDI(padreTD);
+            socioConsultar.getPadre().setFechaNacimiento(padreFecha);
         
+            int numeroHijos = socioConsultar.getHijos().size()+3;
+
+            int j=0;
+            for(int i=3; i<numeroHijos; i++){
+                socioConsultar.getHijo(j).setNombreCompleto(modeloTabla.getValueAt(i, 1).toString());
+                socioConsultar.getHijo(j).setFechaNacimiento(modeloTabla.getValueAt(i, 2).toString());
+                socioConsultar.getHijo(j).setTipoDI(modeloTabla.getValueAt(i, 3).toString());
+                socioConsultar.getHijo(j).setDi(modeloTabla.getValueAt(i, 4).toString());
+                j++;
+            }  
         }
-        
-    
     }
     
     public int buscarIndexComboBox(String texto, JComboBox combobox){
@@ -393,7 +395,11 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         modeloTabla.setValueAt(socioConsultar.getPadre().getDi(), 2, 4);
         
         int j = 0;
-        for(int i=4; i<socioConsultar.getHijos().size(); i++){
+        int numParaFor = socioConsultar.getHijos().size()+3;
+        System.out.print(socioConsultar.getHijos().size());
+        //modeloTabla.setRowCount(socioConsultar.getHijos().size()+3);
+        
+        for(int i=3; i<numParaFor; i++){
                 modeloTabla.addRow(new Object[]{"Hijo/a","","","",""});
                 modeloTabla.setValueAt(socioConsultar.getHijo(j).getNombreCompleto(),i, 1);
                 modeloTabla.setValueAt(socioConsultar.getHijo(j).getFechaNacimiento(),i, 2);
@@ -405,6 +411,34 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panelFormularios.updateUI();
     }
     
+    private void espacioPrestamos(){
+        panelPrestamos = new JPanel(new FlowLayout());
+        panelPrestamos.setBorder(BorderFactory.createTitledBorder("Prestamos")); 
+        Dimension dimension = new Dimension();
+        dimension.setSize(400, 70);
+        panelPrestamos.setPreferredSize(dimension);
+        
+        botonPrestamoNuevo = new JButton("Nuevo");
+        botonPrestamoNuevo.addActionListener(this);
+        
+        botonPrestamoConsultar = new JButton("Consultar");
+        botonPrestamoConsultar.addActionListener(this);
+        
+        botonPrestamoEditar = new JButton("Editar");
+        botonPrestamoEditar.addActionListener(this);
+
+        botonPrestamoEliminar = new JButton("Eliminar");
+        botonPrestamoEliminar.addActionListener(this);
+        
+        panelPrestamos.add(botonPrestamoNuevo);
+        panelPrestamos.add(botonPrestamoConsultar);
+        
+        contenedor.add(panelPrestamos);   
+    }
+        
+    private void espacioFormatoPrestamos(){
+        
+    } 
     /*MEtodo heredado de Action Listener que establece las acciones que se hace 
      al hacer click en algunos elementos de la pantalla*/
     @Override
@@ -417,15 +451,28 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             panelFormularios.updateUI();
         }
         
-        if(e.getSource()==botonSocioEditar){
+        if(e.getSource()==buttonCrearSocio){
+            if(verificarDatos()){
+                panelFormularios.removeAll();
+                obtenerDatosSocio(1,null);
+                panelFormularios.updateUI();
+                JOptionPane.showMessageDialog(null,"Socio Agregado con Exito");
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"Estos Datos son necesarios: Nombre Completo, Numero Documento, Direccion, Telefono, Celular","Campos Obligatorios",JOptionPane.WARNING_MESSAGE);
+            }
             
+        }
+        
+        if(e.getSource()==botonSocioEditar){
+            obtenerDatosSocio(2,socioConsultar);
         }
         
         if(e.getSource()==botonSocioConsultar){
             int sociosConsultar = Integer.parseInt(JOptionPane.showInputDialog(null,"Que socio desea consultar?"));
             
             if(cooperativa.socioExiste(sociosConsultar)){
-                Socio socioConsultar = cooperativa.cosultarSocio(sociosConsultar);
+                socioConsultar = cooperativa.cosultarSocio(sociosConsultar);
                 panelFormularios.removeAll();
                 espacioFormatoSocios();
                 ponerDatosSocioCampos(socioConsultar);
@@ -439,27 +486,31 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         }
         
         if(e.getSource()==botonSocioEliminar){
-        }
-        
-        if(e.getSource()==botonAgregarHijo){
-            //panelFormularios.removeAll();
-            modeloTabla.addRow(new Object[]{"Hijo/a","","","",""});
+            panelFormularios.removeAll();
+            cooperativa.eliminarSocio(socioConsultar);
             panelFormularios.updateUI();
         }
         
-        if(e.getSource()==buttonCrearSocio){
-            if(verificarDatos()){
-                panelFormularios.removeAll();
-                obtenerDatosSocio(1);
-                panelFormularios.updateUI();
-                JOptionPane.showMessageDialog(null,"Socio Agregado con Exito");
-            }
-            else{
-                JOptionPane.showMessageDialog(null,"Estos Datos son necesarios: Nombre Completo, Numero Documento, Direccion, Telefono, Celular","Campos Obligatorios",JOptionPane.WARNING_MESSAGE);
-            }
+        if(e.getSource()==botonAgregarHijo){
+            modeloTabla.addRow(new Object[]{"Hijo/a","","","",""});
+            panelFormularios.updateUI();
+        }
+
+        if(e.getSource()==botonPrestamoNuevo){
             
         }
-               
+                
+        if(e.getSource()==botonPrestamoConsultar){
+            
+        }
+        
+        if(e.getSource()==botonPrestamoEditar){
+            
+        }
+        
+        if(e.getSource()==botonPrestamoEliminar){
+            
+        }
     }
     
     /*Metodo main que inicializa la aplicacion*/

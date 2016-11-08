@@ -14,8 +14,8 @@ public class Socio extends Persona{
     private int celular;
     private String barrioResidencia;
     private String ciudadResidencia;
-    private double ingresoMensual;
-    private double egresoMensual;
+    private int ingresoMensual;
+    private int egresoMensual;
     private String estadoCivil;
     private Persona conyugue;
     private Persona madre;
@@ -26,8 +26,8 @@ public class Socio extends Persona{
     }
 
     public Socio(String nombreCompleto, String di, String tipoDI, String fechaNacimiento, String lugarExpID, String nombreEmpresa, String cargoEmpresa, String fechaIngresoEmpresa,
-        String nivelEstudios, boolean casaAptPropio, String direccionResidencia, int telefonoResidencia, int celular,String barrioResidencia, String ciudadResidencia, double ingresoMensual, 
-        double egresoMensual, String estadoCivil,  Persona conyugue, Persona madre, Persona padre, ArrayList<Persona> hijos) {
+        String nivelEstudios, boolean casaAptPropio, String direccionResidencia, int telefonoResidencia, int celular,String barrioResidencia, String ciudadResidencia, int ingresoMensual, 
+        int egresoMensual, String estadoCivil,  Persona conyugue, Persona madre, Persona padre, ArrayList<Persona> hijos) {
         super(nombreCompleto, di, tipoDI, fechaNacimiento);
         this.lugarExpID = lugarExpID;
         this.nombreEmpresa = nombreEmpresa;
@@ -97,11 +97,11 @@ public class Socio extends Persona{
         return ciudadResidencia;
     }
 
-    public double getIngresoMensual() {
+    public int getIngresoMensual() {
         return ingresoMensual;
     }
 
-    public double getEgresoMensual() {
+    public int getEgresoMensual() {
         return egresoMensual;
     }
 
@@ -168,11 +168,11 @@ public class Socio extends Persona{
         this.ciudadResidencia = ciudadResidencia;
     }
 
-    public void setIngresoMensual(double ingresoMensual) {
+    public void setIngresoMensual(int ingresoMensual) {
         this.ingresoMensual = ingresoMensual;
     }
 
-    public void setEgresoMensual(double egresoMensual) {
+    public void setEgresoMensual(int egresoMensual) {
         this.egresoMensual = egresoMensual;
     }
 

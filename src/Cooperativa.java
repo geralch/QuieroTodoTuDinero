@@ -20,25 +20,16 @@ public class Cooperativa {
         this.valorMaximoPrestamos = valorMaximoPrestamos;
     }
 
-    public void anyadirPrestamo(Prestamo prestamo) {
-        prestamos.add(prestamo);
-    }
-
     public double getValorMaximoPrestamos() {
         return valorMaximoPrestamos;
     }
 
+    public void anyadirPrestamo(Prestamo prestamo) {
+        prestamos.add(prestamo);
+    }
+    
     public ArrayList<Prestamo> getPrestamos() {
         return prestamos;
-    }
-    
-    public ArrayList<Socio> getSocios() {
-        return socios;
-    }
-    
-    public void anyadirSocios(Socio socio) {
-        Socio socioAux = socio;
-        socios.add(socioAux);
     }
     
     public Prestamo cosultarPrestamo(int idPrestamo) {
@@ -50,6 +41,26 @@ public class Cooperativa {
             }
         }
         return prestamo;
+    }
+    
+    public ArrayList<Socio> getSocios() {
+        return socios;
+    }
+    
+    public void anyadirSocios(Socio socio) {
+        Socio socioAux = socio;
+        socios.add(socioAux);
+    }
+    
+    public void eliminarSocio(Socio socio){
+        
+        int idSocio = Integer.parseInt(socio.getDi());
+        
+        for(int i=0; i<socios.size(); i++){
+            if(idSocio==Integer.parseInt(socios.get(i).getDi())){
+                socios.remove(i);
+            }
+        }
     }
     
     public Socio cosultarSocio(int idSocio) {

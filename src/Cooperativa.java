@@ -4,9 +4,11 @@ import java.util.*;
 public class Cooperativa {
     private double valorMaximoPrestamos;
     private ArrayList<Prestamo> prestamos;
+    private int numPrestamoActual;
     private ArrayList<Socio> socios;
     
     public Cooperativa(){
+        numPrestamoActual = 0;
         prestamos = new ArrayList();
         socios = new ArrayList();
     }
@@ -14,6 +16,10 @@ public class Cooperativa {
     public Cooperativa(double valorMaximoPrestamos, ArrayList<Prestamo> prestamos) {
         this.valorMaximoPrestamos = valorMaximoPrestamos;
         this.prestamos = prestamos;
+        
+        numPrestamoActual = 0;
+        prestamos = new ArrayList();
+        socios = new ArrayList();
     }
 
     public void setValorMaximoPrestamos(double valorMaximoPrestamos) {
@@ -23,9 +29,18 @@ public class Cooperativa {
     public double getValorMaximoPrestamos() {
         return valorMaximoPrestamos;
     }
+    
+    public void setNumPrestamoActual(int numPrestamoActual) {
+        this.numPrestamoActual = numPrestamoActual;
+    }
+
+    public int getNumPrestamoActual() {
+        return numPrestamoActual;
+    }
 
     public void anyadirPrestamo(Prestamo prestamo) {
         prestamos.add(prestamo);
+        numPrestamoActual++;
     }
     
     public ArrayList<Prestamo> getPrestamos() {

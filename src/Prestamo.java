@@ -6,8 +6,6 @@ public class Prestamo {
     private Socio socioResponsable;
     private double valorPrestamos;
     private int cuotasPago;
-    private boolean autorizada;
-    private boolean consignada;
     private Date fechaAutorizacion;
     private Date fechaDesembolse;
     private ArrayList<Date> fechasConsignaciones;
@@ -15,13 +13,11 @@ public class Prestamo {
     public Prestamo(){
         
     }
-    public Prestamo(int numeroPrestemo, Socio socioResponsable, double valorPrestamos, int cuotasPago, boolean autorizada, boolean consignada, Date fechaAutorizacion, Date fechaDesembolse, ArrayList<Date> fechasConsignaciones) {
+    public Prestamo(int numeroPrestemo, Socio socioResponsable, double valorPrestamos, int cuotasPago, Date fechaAutorizacion, Date fechaDesembolse, ArrayList<Date> fechasConsignaciones) {
         this.numeroPrestemo = numeroPrestemo;
         this.socioResponsable = socioResponsable;
         this.valorPrestamos = valorPrestamos;
         this.cuotasPago = cuotasPago;
-        this.autorizada = autorizada;
-        this.consignada = consignada;
         this.fechaAutorizacion = fechaAutorizacion;
         this.fechaDesembolse = fechaDesembolse;
         this.fechasConsignaciones = fechasConsignaciones;
@@ -41,14 +37,6 @@ public class Prestamo {
 
     public int getCuotasPago() {
         return cuotasPago;
-    }
-
-    public boolean isAutorizada() {
-        return autorizada;
-    }
-
-    public boolean isConsignada() {
-        return consignada;
     }
 
     public Date getFechaAutorizacion() {
@@ -77,14 +65,6 @@ public class Prestamo {
 
     public void setCuotasPago(int cuotasPago) {
         this.cuotasPago = cuotasPago;
-    }
-
-    public void setAutorizada(boolean autorizada) {
-        this.autorizada = autorizada;
-    }
-
-    public void setConsignada(boolean consignada) {
-        this.consignada = consignada;
     }
 
     public void setFechaAutorizacion(Date fechaAutorizacion) {

@@ -39,10 +39,11 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private JTable tablaFamiliares;
     private JButton botonAgregarHijo;
     private JPanel panelSocios;
-    private JPanel panelFormularios;
     private JPanel panelEFSocios;
     private JPanel panelEFSociosR;
     private JPanel panelBotonesSocios;
+    private JPanel panelFormularios;
+    private JPanel panelEFPrestamos;
     private JButton botonSocioNuevo;
     private JButton botonSocioEditar;
     private JButton botonSocioConsultar;
@@ -58,6 +59,16 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private Socio socioConsultar;
     
     private JScrollPane scrollPane;
+    private JTextField tfDISocio;
+    private JTextField tfValorPrestamo;
+    private JTextField tfCuotas;
+    private JTextField tfFechaAutorizacion;
+    private JTextField tfFechaDesembolse;
+    private JTextArea textArea;
+    private JTextField tfNumPrestamo;
+    private JButton buttonCrearPrestamo;
+    private JPanel panelBotonesPrestamo;
+    private JButton buttonGenerarFechas;
     
     /*Constructor de la clase*/
     public VentanaPrincipal(){
@@ -78,16 +89,50 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
        
         panelFormularios = new JPanel(new FlowLayout());
         panelFormularios.setBorder(BorderFactory.createTitledBorder("Formulario"));
-        Dimension dimension = new Dimension();
-        dimension.setSize(1050, 580);
-        panelFormularios.setPreferredSize(dimension);
+        redimensionarPanel(1050,580,panelFormularios);
         
         espacioSocios();
         espacioPrestamos();
         contenedor.add(panelFormularios);
         this.setVisible(true);
     }
+    
+    private void redimensionarPanel(int w, int l, JPanel panel){
+        Dimension dimension = new Dimension();
+        dimension.setSize(w, l);
+        panel.setPreferredSize(dimension);
+    }
+    
+    public int buscarIndexComboBox(String texto, JComboBox combobox){
         
+        int index = 0;
+        for(int i=0; i<combobox.getItemCount(); i++){
+            if(texto.equals(combobox.getItemAt(i).toString())){
+                index = i;
+            }
+        }
+        return index;
+    }
+    
+    private void espacioSocios(){
+        panelSocios = new JPanel(new FlowLayout());
+        panelSocios.setBorder(BorderFactory.createTitledBorder("Socios"));
+        Dimension dimension = new Dimension();
+        dimension.setSize(400, 70);
+        panelSocios.setPreferredSize(dimension);
+        
+        botonSocioNuevo = new JButton("Nuevo");
+        botonSocioNuevo.addActionListener(this);
+
+        botonSocioConsultar = new JButton("Consultar");
+        botonSocioConsultar.addActionListener(this);
+
+        panelSocios.add(botonSocioNuevo);
+        panelSocios.add(botonSocioConsultar);
+       
+        contenedor.add(panelSocios);
+    }
+         
     private void espacioFormatoSocios(){
         
         panelEFSocios = new JPanel(new GridLayout(18,2,0,0));
@@ -205,26 +250,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panelFormularios.add(panelBotonesSocios);
     }
     
-    private void espacioSocios(){
-        panelSocios = new JPanel(new FlowLayout());
-        panelSocios.setBorder(BorderFactory.createTitledBorder("Socios"));
-        Dimension dimension = new Dimension();
-        dimension.setSize(400, 70);
-        panelSocios.setPreferredSize(dimension);
-        
-        botonSocioNuevo = new JButton("Nuevo");
-        botonSocioNuevo.addActionListener(this);
-
-        botonSocioConsultar = new JButton("Consultar");
-        botonSocioConsultar.addActionListener(this);
-
-        panelSocios.add(botonSocioNuevo);
-        panelSocios.add(botonSocioConsultar);
-       
-        contenedor.add(panelSocios);
-    }
-       
-    private boolean verificarDatos(){
+    private boolean verificarDatosSocio(){
         boolean verificacion = false;
         System.out.print("entra aqui a verificar");
         if(tfNombreCompleto.getText().equals("") || tfCedulaCiudadania.getText().equals("") || 
@@ -347,18 +373,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             }  
         }
     }
-    
-    public int buscarIndexComboBox(String texto, JComboBox combobox){
-        
-        int index = 0;
-        for(int i=0; i<combobox.getItemCount(); i++){
-            if(texto.equals(combobox.getItemAt(i).toString())){
-                index = i;
-            }
-        }
-        return index;
-    }
-       
+     
     public void ponerDatosSocioCampos(Socio socioConsultar){
         tfNombreCompleto.setText(socioConsultar.getNombreCompleto());
         cbTD.setSelectedIndex(buscarIndexComboBox(socioConsultar.getTipoDI(),cbTD));
@@ -423,13 +438,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         
         botonPrestamoConsultar = new JButton("Consultar");
         botonPrestamoConsultar.addActionListener(this);
-        
-        botonPrestamoEditar = new JButton("Editar");
-        botonPrestamoEditar.addActionListener(this);
-
-        botonPrestamoEliminar = new JButton("Eliminar");
-        botonPrestamoEliminar.addActionListener(this);
-        
+             
         panelPrestamos.add(botonPrestamoNuevo);
         panelPrestamos.add(botonPrestamoConsultar);
         
@@ -437,8 +446,57 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     }
         
     private void espacioFormatoPrestamos(){
+        panelEFPrestamos = new JPanel(new GridLayout(18,2,0,0));
+        panelEFPrestamos.setBorder(BorderFactory.createTitledBorder("Campos Prestamo"));
+        Dimension dimension = new Dimension();
+        dimension.setSize(500, 500);
+        panelEFPrestamos.setPreferredSize(dimension);
+    
+        String numPrestamoActual = String.valueOf(cooperativa.getNumPrestamoActual()+1);
+        tfNumPrestamo = new JTextField(numPrestamoActual);
+        tfDISocio = new JTextField("");
+        tfValorPrestamo = new JTextField("");
+        tfCuotas = new JTextField("");
+        tfFechaAutorizacion = new JTextField("");
+        tfFechaDesembolse = new JTextField("");
+
+        panelEFPrestamos.add(new JLabel("Prestamo No: "),0,0);
+        panelEFPrestamos.add(tfNumPrestamo,0,1);
+        panelEFPrestamos.add(new JLabel("DI Socio: "),0,2);
+        panelEFPrestamos.add(tfDISocio,0,3);
+        panelEFPrestamos.add(new JLabel("Valor Prestamo: "),0,4);
+        panelEFPrestamos.add(tfValorPrestamo,0,5);
+        panelEFPrestamos.add(new JLabel("Numero Cuotas: "),0,6);
+        panelEFPrestamos.add(tfCuotas,0,7);
+        panelEFPrestamos.add(new JLabel("Fecha Autorizacion: "),0,8);
+        panelEFPrestamos.add(tfFechaAutorizacion,0,9);
+        panelEFPrestamos.add(new JLabel("Fecha Desembolse: "),0,10);
+        panelEFPrestamos.add(tfFechaDesembolse,0,11);
+        panelEFPrestamos.add(new JLabel("Fechas de Pago Cuotas: "),0,12);
         
+        textArea = new JTextArea(20, 20);
+        scrollPane = new JScrollPane(textArea); 
+        textArea.setEditable(false);
+        panelEFPrestamos.add(textArea);
+        
+        panelBotonesPrestamo = new JPanel();
+        
+        buttonCrearPrestamo = new JButton("Agregar Prestamo");
+        buttonCrearPrestamo.addActionListener(this);
+        buttonGenerarFechas = new JButton("Generar Fechas");
+        buttonGenerarFechas.addActionListener(this);
+           
+        botonPrestamoEditar = new JButton("Editar");
+        botonPrestamoEditar.addActionListener(this);
+
+        botonPrestamoEliminar = new JButton("Eliminar");
+        botonPrestamoEliminar.addActionListener(this);
+        
+        panelFormularios.add(panelEFPrestamos);
+        panelFormularios.add(panelBotonesPrestamo);
     } 
+    
+    
     /*MEtodo heredado de Action Listener que establece las acciones que se hace 
      al hacer click en algunos elementos de la pantalla*/
     @Override
@@ -446,13 +504,14 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
                 
         if(e.getSource()==botonSocioNuevo){
             panelFormularios.removeAll();
+            redimensionarPanel(1050,580,panelFormularios);
             espacioFormatoSocios();
             panelBotonesSocios.add(buttonCrearSocio);
             panelFormularios.updateUI();
         }
         
         if(e.getSource()==buttonCrearSocio){
-            if(verificarDatos()){
+            if(verificarDatosSocio()){
                 panelFormularios.removeAll();
                 obtenerDatosSocio(1,null);
                 panelFormularios.updateUI();
@@ -474,6 +533,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             if(cooperativa.socioExiste(sociosConsultar)){
                 socioConsultar = cooperativa.cosultarSocio(sociosConsultar);
                 panelFormularios.removeAll();
+                redimensionarPanel(1050,580,panelFormularios);
                 espacioFormatoSocios();
                 ponerDatosSocioCampos(socioConsultar);
                 panelBotonesSocios.add(botonSocioEditar);
@@ -497,11 +557,16 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         }
 
         if(e.getSource()==botonPrestamoNuevo){
-            
+            panelFormularios.removeAll();
+            redimensionarPanel(600,580,panelFormularios);            
+            espacioFormatoPrestamos();
+            panelBotonesPrestamo.add(buttonCrearPrestamo);
+            panelBotonesPrestamo.add(buttonGenerarFechas);
+            panelFormularios.updateUI();
         }
                 
         if(e.getSource()==botonPrestamoConsultar){
-            
+            int sociosConsultar = Integer.parseInt(JOptionPane.showInputDialog(null,"Que Prestamo desea consultar?"));
         }
         
         if(e.getSource()==botonPrestamoEditar){

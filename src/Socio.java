@@ -11,7 +11,7 @@ public class Socio extends Persona{
     private boolean casaAptPropio;
     private String direccionResidencia;
     private int telefonoResidencia;
-    private int celular;
+    private String celular;
     private String barrioResidencia;
     private String ciudadResidencia;
     private int ingresoMensual;
@@ -26,7 +26,7 @@ public class Socio extends Persona{
     }
 
     public Socio(String nombreCompleto, String di, String tipoDI, String fechaNacimiento, String lugarExpID, String nombreEmpresa, String cargoEmpresa, String fechaIngresoEmpresa,
-        String nivelEstudios, boolean casaAptPropio, String direccionResidencia, int telefonoResidencia, int celular,String barrioResidencia, String ciudadResidencia, int ingresoMensual, 
+        String nivelEstudios, boolean casaAptPropio, String direccionResidencia, int telefonoResidencia, String celular,String barrioResidencia, String ciudadResidencia, int ingresoMensual, 
         int egresoMensual, String estadoCivil,  Persona conyugue, Persona madre, Persona padre, ArrayList<Persona> hijos) {
         super(nombreCompleto, di, tipoDI, fechaNacimiento);
         this.lugarExpID = lugarExpID;
@@ -49,11 +49,11 @@ public class Socio extends Persona{
         this.hijos = hijos;
         }
 
-    public void setCelular(int celular) {
+    public void setCelular(String celular) {
         this.celular = celular;
     }
 
-    public int getCelular() {
+    public String getCelular() {
         return celular;
     }
 

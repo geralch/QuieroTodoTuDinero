@@ -65,11 +65,12 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private JTextField tfCuotas;
     private JTextField tfFechaAutorizacion;
     private JTextField tfFechaDesembolse;
-    private JTextArea textArea;
+    private JTextArea taFechaConsignaciones;
     private JTextField tfNumPrestamo;
     private JButton buttonCrearPrestamo;
     private JPanel panelBotonesPrestamo;
     private JButton buttonGenerarFechas;
+    private Prestamo prestamoNuevo;
     
     /*Constructor de la clase*/
     public VentanaPrincipal(){
@@ -256,11 +257,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         System.out.print("entra aqui a verificar");
         if(tfNombreCompleto.getText().equals("") || tfCedulaCiudadania.getText().equals("") || 
                 tfDireccion.getText().equals("") || tfTelefono.getText().equals("") || tfCelular.getText().equals("")){
-            System.out.print("entra aqui verificacion true");
         }
         else{
             verificacion = true;
-            System.out.print("entra aqui verificacion falso");
         }
         
         return verificacion;
@@ -283,8 +282,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         String padreTD = modeloTabla.getValueAt(2, 3).toString();
         String padreDocumento = modeloTabla.getValueAt(2, 4).toString();
         
-        String nombre, td, documento, ciudadExp, fechaNacimiento, empresa, cargo, fechaIngreso, nivelEstudio, estadoCivil,direccion, barrio, ciudad = "";
-        int telefono, celular = 0;
+        String nombre, td, documento, ciudadExp, fechaNacimiento, empresa, cargo, fechaIngreso, nivelEstudio, estadoCivil,direccion, barrio, ciudad, celular = "";
+        int telefono = 0;
         int ingresosMensuales, egresosMensuales = 0;
         
         nombre = tfNombreCompleto.getText();
@@ -300,7 +299,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         boolean casaApartamento = cbCasaApartamente.isSelected();
         direccion = tfDireccion.getText();
         telefono = Integer.parseInt(tfTelefono.getText());
-        celular = Integer.parseInt(tfCelular.getText());
+        celular = tfCelular.getText();
         barrio = tfBarrio.getText();
         ciudad = tfCiudad.getText();
         ingresosMensuales = Integer.parseInt(tfIngresosMensuales.getText());
@@ -324,7 +323,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
                 hijos.add(hijoNuevo);
             }   
             Socio nuevoSocio = new Socio(nombre,documento,td,fechaNacimiento,ciudadExp,empresa,cargo,fechaIngreso,nivelEstudio,casaApartamento,direccion,telefono,celular,barrio,ciudad,
-                ingresosMensuales,ingresosMensuales,estadoCivil,conyugueSocio,madreSocio,padreSocio,hijos);
+                ingresosMensuales,egresosMensuales,estadoCivil,conyugueSocio,madreSocio,padreSocio,hijos);
             cooperativa.anyadirSocios(nuevoSocio);
         }
         else{
@@ -376,6 +375,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     }
      
     public void ponerDatosSocioCampos(Socio socioConsultar){
+        
         tfNombreCompleto.setText(socioConsultar.getNombreCompleto());
         cbTD.setSelectedIndex(buscarIndexComboBox(socioConsultar.getTipoDI(),cbTD));
         tfCedulaCiudadania.setText(socioConsultar.getDi());
@@ -390,8 +390,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         tfDireccion.setText(socioConsultar.getDireccionResidencia());
         tfTelefono.setText(String.valueOf(socioConsultar.getTelefonoResidencia()));
         tfCelular.setText(String.valueOf(socioConsultar.getCelular()));
-        tfBarrio.setText(socioConsultar.getDireccionResidencia());
-        tfCiudad.setText(socioConsultar.getDireccionResidencia());
+        tfBarrio.setText(socioConsultar.getBarrioResidencia());
+        tfCiudad.setText(socioConsultar.getCiudadResidencia());
         tfIngresosMensuales.setText(String.valueOf(socioConsultar.getIngresoMensual()));
         tfEgresosMensuales.setText(String.valueOf(socioConsultar.getEgresoMensual()));
         
@@ -413,7 +413,6 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         int j = 0;
         int numParaFor = socioConsultar.getHijos().size()+3;
         System.out.print(socioConsultar.getHijos().size());
-        //modeloTabla.setRowCount(socioConsultar.getHijos().size()+3);
         
         for(int i=3; i<numParaFor; i++){
                 modeloTabla.addRow(new Object[]{"Hijo/a","","","",""});
@@ -453,9 +452,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         dimension.setSize(500, 500);
         panelEFPrestamos.setPreferredSize(dimension);
     
-        String numPrestamoActual = String.valueOf(cooperativa.getNumPrestamoActual()+1);
-        tfNumPrestamo = new JTextField(numPrestamoActual);
+        tfNumPrestamo = new JTextField("");
         tfDISocio = new JTextField("");
+        tfNumPrestamo.setEditable(false);
         tfValorPrestamo = new JTextField("");
         tfCuotas = new JTextField("");
         tfFechaAutorizacion = new JTextField("");
@@ -475,17 +474,15 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panelEFPrestamos.add(tfFechaDesembolse,0,11);
         panelEFPrestamos.add(new JLabel("Fechas de Pago Cuotas: "),0,12);
         
-        textArea = new JTextArea(20, 20);
-        scrollPane = new JScrollPane(textArea); 
-        textArea.setEditable(false);
-        panelEFPrestamos.add(textArea);
+        taFechaConsignaciones = new JTextArea(20, 20);
+        scrollPane = new JScrollPane(taFechaConsignaciones); 
+        taFechaConsignaciones.setEditable(false);
+        panelEFPrestamos.add(taFechaConsignaciones);
         
         panelBotonesPrestamo = new JPanel();
         
         buttonCrearPrestamo = new JButton("Agregar Prestamo");
         buttonCrearPrestamo.addActionListener(this);
-        buttonGenerarFechas = new JButton("Generar Fechas");
-        buttonGenerarFechas.addActionListener(this);
            
         botonPrestamoEditar = new JButton("Editar");
         botonPrestamoEditar.addActionListener(this);
@@ -497,14 +494,80 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panelFormularios.add(panelBotonesPrestamo);
     } 
     
-    private void obtenerDatosPrestamo(int tipoform, Prestamo prestamo){
+    private void obtenerDatosPrestamo(int tipoform, Prestamo prestamoConsultar){
         
-        int numeroPrestamo,valorPrestamo, cuotasPago = 0;
-        String fechaAutorizacion, fechaDesembolse = "";
+        int numeroPrestamo,valorPrestamo, cuotasPago, idSocio = 0;
+        String fechaAutorizacion, fechaDesembolse, fechasConsignaciones = "";     
+        
+        numeroPrestamo = Integer.parseInt(tfNumPrestamo.getText());
+        idSocio = Integer.parseInt(tfDISocio.getText());
+        valorPrestamo = Integer.parseInt(tfValorPrestamo.getText());
+        cuotasPago = Integer.parseInt(tfCuotas.getText());
+        fechaAutorizacion = tfFechaAutorizacion.getText();
+        
+        if(tipoform==1){
+            if(cooperativa.socioExiste(idSocio)){
+                Socio socioPrestamo = new Socio();
+                socioPrestamo = cooperativa.cosultarSocio(idSocio);
+                prestamoNuevo = new Prestamo(numeroPrestamo,socioPrestamo, valorPrestamo,cuotasPago,fechaAutorizacion);
+                fechaDesembolse = prestamoNuevo.getFechaDesembolse();
+                fechasConsignaciones = prestamoNuevo.getFechasConsignaciones();
+                cooperativa.anyadirPrestamo(prestamoNuevo);
+
+                tfFechaDesembolse.setText(fechaDesembolse);
+                taFechaConsignaciones.setText(fechasConsignaciones);
+                JOptionPane.showMessageDialog(null,"Prestamo Agregado con Exito\n"+reciboPrestamo());
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"El Socio no existe");
+            }
+        }
+        else{
+            prestamoConsultar.setValorPrestamos(valorPrestamo);
+            prestamoConsultar.setCuotasPago(cuotasPago);
+            prestamoConsultar.setFechaAutorizacion(fechaAutorizacion);
+            fechaDesembolse = prestamoNuevo.getFechaDesembolse();
+            fechasConsignaciones = prestamoNuevo.getFechasConsignaciones();
+        }
         
     }
     
+    private boolean verificarDatosPrestamos(){
+        boolean verificacion = false;
+        if(tfDISocio.getText().equals("") || tfValorPrestamo.getText().equals("") || tfCuotas.getText().equals("") ){
+        }
+        else{
+            
+            verificacion = true;
+        }
+        
+        return verificacion;
+    }
     
+    private String reciboPrestamo(){
+        String recibo = "Prestamo No: "+prestamoNuevo.getNumeroPrestemo()+
+                "\nSocio:\nDI: "+prestamoNuevo.getSocioResponsable().getDi()+" "+prestamoNuevo.getSocioResponsable().getTipoDI()+
+                "\nNombre: "+prestamoNuevo.getSocioResponsable().getNombreCompleto()+
+                "\nDireccion: "+prestamoNuevo.getSocioResponsable().getDireccionResidencia()+
+                "\nTelefono: "+prestamoNuevo.getSocioResponsable().getTelefonoResidencia()+" Celular: "+prestamoNuevo.getSocioResponsable().getCelular()+
+                "\nValor Prestado: "+prestamoNuevo.getValorPrestamos()+
+                "\nFecha Autorizacion: "+prestamoNuevo.getFechaAutorizacion()+
+                "\nFecha Desembolzo: "+prestamoNuevo.getFechaDesembolse()+
+                "\nFechas de PAgo: "+prestamoNuevo.getFechasConsignaciones();
+        
+        return recibo;
+    }
+    
+    private void ponerDatosPrestamoCampos(Prestamo prestamoConsultar){
+        
+        tfNumPrestamo.setText(String.valueOf(prestamoConsultar.getNumeroPrestemo()));
+        tfDISocio.setText((prestamoConsultar.getSocioResponsable().getDi()));
+        tfValorPrestamo.setText(String.valueOf(prestamoConsultar.getValorPrestamos()));
+        tfCuotas.setText(String.valueOf(prestamoConsultar.getCuotasPago()));
+        tfFechaAutorizacion.setText(prestamoConsultar.getFechaAutorizacion());
+        tfFechaDesembolse.setText((prestamoConsultar.getFechaDesembolse()));
+        taFechaConsignaciones.setText(prestamoConsultar.getFechasConsignaciones());
+    }
     /*MEtodo heredado de Action Listener que establece las acciones que se hace 
      al hacer click en algunos elementos de la pantalla*/
     @Override
@@ -533,6 +596,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         
         if(e.getSource()==botonSocioEditar){
             obtenerDatosSocio(2,socioConsultar);
+            JOptionPane.showMessageDialog(null,"Socio Editado");
         }
         
         if(e.getSource()==botonSocioConsultar){
@@ -557,6 +621,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             panelFormularios.removeAll();
             cooperativa.eliminarSocio(socioConsultar);
             panelFormularios.updateUI();
+            JOptionPane.showMessageDialog(null,"Socio Eliminado");
         }
         
         if(e.getSource()==botonAgregarHijo){
@@ -568,35 +633,53 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
             panelFormularios.removeAll();
             redimensionarPanel(600,580,panelFormularios);            
             espacioFormatoPrestamos();
+            tfNumPrestamo.setText(String.valueOf(cooperativa.getNumPrestamoActual()+1));
             panelBotonesPrestamo.add(buttonCrearPrestamo);
-            panelBotonesPrestamo.add(buttonGenerarFechas);
             panelFormularios.updateUI();
+        }
+        
+        if(e.getSource()==buttonCrearPrestamo){
+            
+            if(verificarDatosPrestamos()){
+                panelFormularios.removeAll();
+                obtenerDatosPrestamo(1,null);
+                panelFormularios.updateUI();
+                
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"Estos Datos son necesarios: DI Socio, Valor Prestamo, Cuotas Prestamo","Campos Obligatorios",JOptionPane.WARNING_MESSAGE);
+            }
+            
         }
                 
         if(e.getSource()==botonPrestamoConsultar){
             int prestamosConsultar = Integer.parseInt(JOptionPane.showInputDialog(null,"Que Prestamo desea consultar?"));
             
-            //if(cooperativa.prestamoExiste(prestamosConsultar)){
+            if(cooperativa.prestamoExiste(prestamosConsultar)){
                 prestamoConsultar = cooperativa.cosultarPrestamo(prestamosConsultar);
                 panelFormularios.removeAll();
                 redimensionarPanel(600,580,panelFormularios);
                 espacioFormatoPrestamos();
-                //ponerDatosSocioCampos(socioConsultar);
+                ponerDatosPrestamoCampos(prestamoConsultar);
                 panelBotonesPrestamo.add(botonPrestamoEditar);
                 panelBotonesPrestamo.add(botonPrestamoEliminar);
                 panelFormularios.updateUI();
-            //}
-            //else{
-            //    JOptionPane.showMessageDialog(null,"Prestamo No Existe");
-            //}
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"Prestamo No Existe");
+            }
         }
         
         if(e.getSource()==botonPrestamoEditar){
-            
+            obtenerDatosPrestamo(2,prestamoConsultar);
+            JOptionPane.showMessageDialog(null,"Prestamo Editado");
         }
         
         if(e.getSource()==botonPrestamoEliminar){
-            
+            panelFormularios.removeAll();
+            cooperativa.eliminarPrestamo(prestamoConsultar);
+            panelFormularios.updateUI();
+            JOptionPane.showMessageDialog(null,"Prestamo Eliminado");
         }
     }
     

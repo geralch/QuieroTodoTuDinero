@@ -1,4 +1,4 @@
-import java.awt.*;
+ import java.awt.*;
 import java.util.*;
 
 public class Prestamo {
@@ -8,19 +8,17 @@ public class Prestamo {
     private int cuotasPago;
     private String fechaAutorizacion;
     private String fechaDesembolse;
-    private ArrayList<String> fechasConsignaciones;
+    private String fechasConsignaciones;
     
     public Prestamo(){
         
     }
-    public Prestamo(int numeroPrestemo, Socio socioResponsable, int valorPrestamos, int cuotasPago, String fechaAutorizacion, String fechaDesembolse, ArrayList<String> fechasConsignaciones) {
+    public Prestamo(int numeroPrestemo, Socio socioResponsable, int valorPrestamos, int cuotasPago, String fechaAutorizacion) {
         this.numeroPrestemo = numeroPrestemo;
         this.socioResponsable = socioResponsable;
         this.valorPrestamos = valorPrestamos;
         this.cuotasPago = cuotasPago;
         this.fechaAutorizacion = fechaAutorizacion;
-        this.fechaDesembolse = fechaDesembolse;
-        this.fechasConsignaciones = fechasConsignaciones;
     }
     
     public int getNumeroPrestemo() {
@@ -47,7 +45,7 @@ public class Prestamo {
         return fechaDesembolse;
     }
 
-    public ArrayList<String> getFechasConsignaciones() {
+    public String getFechasConsignaciones() {
         return fechasConsignaciones;
     }
 
@@ -75,9 +73,9 @@ public class Prestamo {
         this.fechaDesembolse = fechaDesembolse;
     }
 
-    public void setFechasConsignaciones(ArrayList<String> fechasConsignaciones) {
+    public void setFechasConsignaciones() {
+        String fechasConsignaciones = "";
         this.fechasConsignaciones = fechasConsignaciones;
     }
-    
     
 }

@@ -71,6 +71,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private JPanel panelBotonesPrestamo;
     private JButton buttonGenerarFechas;
     private Prestamo prestamoNuevo;
+    private JPanel panelFechaConsignaciones;
     
     /*Constructor de la clase*/
     public VentanaPrincipal(){
@@ -446,10 +447,10 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     }
         
     private void espacioFormatoPrestamos(){
-        panelEFPrestamos = new JPanel(new GridLayout(18,2,0,0));
+        panelEFPrestamos = new JPanel(new GridLayout(13,2,0,0));
         panelEFPrestamos.setBorder(BorderFactory.createTitledBorder("Campos Prestamo"));
         Dimension dimension = new Dimension();
-        dimension.setSize(500, 500);
+        dimension.setSize(500, 400);
         panelEFPrestamos.setPreferredSize(dimension);
     
         tfNumPrestamo = new JTextField("");
@@ -457,7 +458,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         tfNumPrestamo.setEditable(false);
         tfValorPrestamo = new JTextField("");
         tfCuotas = new JTextField("");
-        tfFechaAutorizacion = new JTextField("");
+        tfFechaAutorizacion = new JTextField("yyyy-mm-dd");
         tfFechaDesembolse = new JTextField("");
 
         panelEFPrestamos.add(new JLabel("Prestamo No: "),0,0);
@@ -474,10 +475,16 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panelEFPrestamos.add(tfFechaDesembolse,0,11);
         panelEFPrestamos.add(new JLabel("Fechas de Pago Cuotas: "),0,12);
         
-        taFechaConsignaciones = new JTextArea(20, 20);
+        panelFechaConsignaciones = new JPanel();
+        panelFechaConsignaciones.setBorder(BorderFactory.createTitledBorder(""));
+        Dimension dimensionPFC = new Dimension();
+        dimensionPFC.setSize(500, 100);
+        panelFechaConsignaciones.setPreferredSize(dimensionPFC);
+        
+        taFechaConsignaciones = new JTextArea(6, 40);
         scrollPane = new JScrollPane(taFechaConsignaciones); 
         taFechaConsignaciones.setEditable(false);
-        panelEFPrestamos.add(taFechaConsignaciones);
+        panelFechaConsignaciones.add(scrollPane);
         
         panelBotonesPrestamo = new JPanel();
         
@@ -491,6 +498,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         botonPrestamoEliminar.addActionListener(this);
         
         panelFormularios.add(panelEFPrestamos);
+        panelFormularios.add(panelFechaConsignaciones);
         panelFormularios.add(panelBotonesPrestamo);
     } 
     
@@ -505,31 +513,39 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         cuotasPago = Integer.parseInt(tfCuotas.getText());
         fechaAutorizacion = tfFechaAutorizacion.getText();
         
-        if(tipoform==1){
-            if(cooperativa.socioExiste(idSocio)){
-                Socio socioPrestamo = new Socio();
-                socioPrestamo = cooperativa.cosultarSocio(idSocio);
-                prestamoNuevo = new Prestamo(numeroPrestamo,socioPrestamo, valorPrestamo,cuotasPago,fechaAutorizacion);
-                fechaDesembolse = prestamoNuevo.getFechaDesembolse();
-                fechasConsignaciones = prestamoNuevo.getFechasConsignaciones();
-                cooperativa.anyadirPrestamo(prestamoNuevo);
+        if(fechaAutorizacionValida()){
+            if(tipoform==1){
+                if(cooperativa.socioExiste(idSocio)){
+                    Socio socioPrestamo = new Socio();
+                    socioPrestamo = cooperativa.cosultarSocio(idSocio);
+                    prestamoNuevo = new Prestamo(numeroPrestamo,socioPrestamo, valorPrestamo,cuotasPago,fechaAutorizacion);
+                    prestamoNuevo.setFechaDesembolse();
+                    prestamoNuevo.setFechasConsignaciones();
+                    fechaDesembolse = prestamoNuevo.getFechaDesembolse();
+                    fechasConsignaciones = prestamoNuevo.getFechasConsignaciones();
+                    cooperativa.anyadirPrestamo(prestamoNuevo);
 
-                tfFechaDesembolse.setText(fechaDesembolse);
-                taFechaConsignaciones.setText(fechasConsignaciones);
-                JOptionPane.showMessageDialog(null,"Prestamo Agregado con Exito\n"+reciboPrestamo());
+                    tfFechaDesembolse.setText(fechaDesembolse);
+                    taFechaConsignaciones.setText(fechasConsignaciones);
+                    reciboPrestamo();
+                }
+                else{
+                    JOptionPane.showMessageDialog(null,"El Socio no existe");
+                }
             }
             else{
-                JOptionPane.showMessageDialog(null,"El Socio no existe");
+                prestamoConsultar.setValorPrestamos(valorPrestamo);
+                prestamoConsultar.setCuotasPago(cuotasPago);
+                prestamoConsultar.setFechaAutorizacion(fechaAutorizacion);
+                prestamoConsultar.setFechaDesembolse();
+                prestamoConsultar.setFechasConsignaciones();
+                fechaDesembolse = prestamoNuevo.getFechaDesembolse();
+                fechasConsignaciones = prestamoNuevo.getFechasConsignaciones();
             }
         }
         else{
-            prestamoConsultar.setValorPrestamos(valorPrestamo);
-            prestamoConsultar.setCuotasPago(cuotasPago);
-            prestamoConsultar.setFechaAutorizacion(fechaAutorizacion);
-            fechaDesembolse = prestamoNuevo.getFechaDesembolse();
-            fechasConsignaciones = prestamoNuevo.getFechasConsignaciones();
+             JOptionPane.showMessageDialog(null,"La Fecha de Autorizacion debe en los primeros 20 dias del mes","Fecha Autorizacion Incorrecta",JOptionPane.WARNING_MESSAGE);
         }
-        
     }
     
     private boolean verificarDatosPrestamos(){
@@ -544,18 +560,33 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         return verificacion;
     }
     
-    private String reciboPrestamo(){
-        String recibo = "Prestamo No: "+prestamoNuevo.getNumeroPrestemo()+
-                "\nSocio:\nDI: "+prestamoNuevo.getSocioResponsable().getDi()+" "+prestamoNuevo.getSocioResponsable().getTipoDI()+
-                "\nNombre: "+prestamoNuevo.getSocioResponsable().getNombreCompleto()+
-                "\nDireccion: "+prestamoNuevo.getSocioResponsable().getDireccionResidencia()+
-                "\nTelefono: "+prestamoNuevo.getSocioResponsable().getTelefonoResidencia()+" Celular: "+prestamoNuevo.getSocioResponsable().getCelular()+
-                "\nValor Prestado: "+prestamoNuevo.getValorPrestamos()+
-                "\nFecha Autorizacion: "+prestamoNuevo.getFechaAutorizacion()+
-                "\nFecha Desembolzo: "+prestamoNuevo.getFechaDesembolse()+
-                "\nFechas de PAgo: "+prestamoNuevo.getFechasConsignaciones();
+    public boolean fechaAutorizacionValida(){
+        boolean valida;
+        String fechaAutorizacion = tfFechaAutorizacion.getText();
+        if(new Prestamo().fechaAutorizacionValida(fechaAutorizacion)){
+            valida = true;
+        }
+        else{
+            valida = false;
+        }
         
-        return recibo;
+        return valida;
+    }
+    
+    private void reciboPrestamo(){
+        ArrayList<String> datos = new ArrayList();
+        datos.add("Prestamo No: "+prestamoNuevo.getNumeroPrestemo());
+        datos.add("\nSocio:\nDI: "+prestamoNuevo.getSocioResponsable().getDi()+" "+prestamoNuevo.getSocioResponsable().getTipoDI());
+        datos.add("\nNombre: "+prestamoNuevo.getSocioResponsable().getNombreCompleto());
+        datos.add("\nDireccion: "+prestamoNuevo.getSocioResponsable().getDireccionResidencia());
+        datos.add( "\nTelefono: "+prestamoNuevo.getSocioResponsable().getTelefonoResidencia()+" Celular: "+prestamoNuevo.getSocioResponsable().getCelular());
+        datos.add("\nValor Prestado: "+prestamoNuevo.getValorPrestamos());
+        datos.add("\nFecha Autorizacion: "+prestamoNuevo.getFechaAutorizacion());
+        datos.add("\nFecha Desembolzo: "+prestamoNuevo.getFechaDesembolse());
+        
+        String fechas = prestamoNuevo.getFechasConsignaciones();
+        
+        VentanaRecibo ventanaRecibo = new VentanaRecibo(datos,fechas);
     }
     
     private void ponerDatosPrestamoCampos(Prestamo prestamoConsultar){
@@ -641,10 +672,14 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         if(e.getSource()==buttonCrearPrestamo){
             
             if(verificarDatosPrestamos()){
-                panelFormularios.removeAll();
-                obtenerDatosPrestamo(1,null);
-                panelFormularios.updateUI();
-                
+                if(fechaAutorizacionValida()){
+                    panelFormularios.removeAll();
+                    obtenerDatosPrestamo(1,null);
+                    panelFormularios.updateUI();
+                }
+                else{
+                    JOptionPane.showMessageDialog(null,"La Fecha de Autorizacion debe en los primeros 20 dias del mes","Fecha Autorizacion Incorrecta",JOptionPane.WARNING_MESSAGE);
+                }
             }
             else{
                 JOptionPane.showMessageDialog(null,"Estos Datos son necesarios: DI Socio, Valor Prestamo, Cuotas Prestamo","Campos Obligatorios",JOptionPane.WARNING_MESSAGE);
